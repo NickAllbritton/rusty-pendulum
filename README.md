@@ -10,7 +10,7 @@ This project is the successor of PendulumSIM: https://github.com/NickAllbritton/
 
 [PendulumSIM](https://github.com/NickAllbritton/pendulum-sim) is a programming project created by me, Nick, in 2023. It was begun as a student project for the Indiana State University chapter of the Society of Physics Students (SPS). 
 
-[Look of PendulumSIM](./screenshots/pendulum-sim.png)
+![Look of PendulumSIM](./screenshots/pendulum-sim.png)
 
 ## Why rewrite? Why not write something new?
 
