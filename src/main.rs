@@ -1,38 +1,28 @@
+use gtk::prelude::*;
+use gtk::{glib, Application, ApplicationWindow};
 
-fn main() -> Result<(), String> {
+const APP_ID: &str = "org.physics_sim.rusty_pendulum";
+
+fn main() -> glib::ExitCode {
     // TODO: Use different window proportions
-    let wnd_width: u32 = 1000;
-    let wnd_height: u32 = 1000;
+    let _wnd_width: u32 = 1000;
+    let _wnd_height: u32 = 1000;
+    // Create a new application
+    let app = Application::builder().application_id(APP_ID).build();
 
-    let sdl_context = sdl2::init()?;
-    let vid_subsystem = sdl_context.video()?;
-    let wnd = vid_subsystem.window("RustyPendulum", wnd_width, wnd_height)
-        .build()
-        .unwrap();
+    app.connect_activate(build_ui);
 
-    let mut canvas = wnd.into_canvas()
-        .build()
-        .unwrap();
+    // Run the application
+    app.run()
+}
 
-    let mut running: bool = true;
-    let mut event_queue = sdl_context.event_pump()?;
+fn build_ui(app: &Application) {
+    // Create a window and set the title
+    let window = ApplicationWindow::builder()
+        .application(app)
+        .title("RustyPendulum")
+        .build();
 
-    while running {
-        // Handle events
-        for event in event_queue.poll_iter() {
-            match event {
-                sdl2::event::Event::Quit {..} => {
-                    running = false;
-                }
-                _ => {}
-            }
-        }
-
-        // Draw screen
-        canvas.set_draw_color(sdl2::pixels::Color::RGB(50, 50, 50));
-        canvas.clear();
-        canvas.present();
-    }
-    
-    Ok(())
+    // Present window
+    window.present();
 }
