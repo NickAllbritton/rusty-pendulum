@@ -15,6 +15,7 @@ fn menu_cb(m: &mut impl MenuExt) {
             "Pause\t" => {},
             "Reset\t" => {},
             "Quit\t" => { app::quit(); },
+            "Double pendulum\t" => {},
             _ => {}
         }
     }
@@ -74,6 +75,21 @@ fn main() -> Result<(), String> {
     );
     menubar.add(
         "Controls/Quit\t",
+        Shortcut::None,
+        menu::MenuFlag::Normal,
+        menu_cb
+    );
+    // Link single and double so that they can't be used together. 
+    // Clicking one unclicks the other
+    // Or use one button that toggles
+    menubar.add(
+        "Pendulums/Single pendulum\t",
+        Shortcut::None,
+        menu::MenuFlag::Normal,
+        menu_cb
+    );
+    menubar.add(
+        "Pendulums/Double pendulum\t",
         Shortcut::None,
         menu::MenuFlag::Normal,
         menu_cb
