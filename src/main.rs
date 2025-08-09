@@ -29,6 +29,7 @@ fn main() -> Result<(), String> {
     // Colors to use
     let dark_brown: Color = Color::from_rgb(30, 24, 19);
     let graph_paper: Color = Color::from_rgb(195, 190, 175);
+    let rust_color: Color = Color::from_rgb(150, 80, 50);
     // Create application
     let app = app::App::default().with_scheme(app::Scheme::Oxy);
     // Create a window
@@ -55,6 +56,7 @@ fn main() -> Result<(), String> {
     menubar.set_text_color(dark_brown);
     menubar.set_frame(FrameType::PlasticThinDownBox);
     menubar.set_color(graph_paper);
+    menubar.set_selection_color(rust_color);
     menubar.add(
         "Controls/Play\t",
         Shortcut::None,
@@ -70,7 +72,7 @@ fn main() -> Result<(), String> {
     menubar.add(
         "Controls/Reset\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::MenuDivider,
         menu_cb
     );
     menubar.add(
@@ -85,49 +87,49 @@ fn main() -> Result<(), String> {
     menubar.add(
         "Pendulums/Single pendulum\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
         "Pendulums/Double pendulum\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle | menu::MenuFlag::MenuDivider,
         menu_cb
     );
     menubar.add(
         "Pendulums/Small angle approximation\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
         "Pendulums/Euler method\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
         "Pendulums/Euler-Cromer method\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
         "Pendulums/Runge-Kutta method\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
         "Graphs/Energies\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
         "Graphs/Velocities\t",
         Shortcut::None,
-        menu::MenuFlag::Normal,
+        menu::MenuFlag::Toggle,
         menu_cb
     );
     menubar.add(
