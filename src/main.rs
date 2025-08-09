@@ -1,28 +1,21 @@
-use gtk::prelude::*;
-use gtk::{glib, Application, ApplicationWindow};
+use fltk::prelude::*;
+use fltk::window;
+use fltk::app;
 
 const APP_ID: &str = "org.physics_sim.rusty_pendulum";
 
-fn main() -> glib::ExitCode {
+fn main() -> Result<(), String> {
     // TODO: Use different window proportions
-    let _wnd_width: u32 = 1000;
-    let _wnd_height: u32 = 1000;
-    // Create a new application
-    let app = Application::builder().application_id(APP_ID).build();
-
-    app.connect_activate(build_ui);
-
+    let wnd_width: i32 = 1000;
+    let wnd_height: i32 = 1000;
+    // Create application
+    let app = app::App::default();
+    // Create a window
+    let mut wnd = window::Window::new(100, 100, wnd_width, wnd_height, "RustyPendulum");
+    wnd.end();
+    wnd.show();
     // Run the application
-    app.run()
-}
+    app.run().unwrap();
 
-fn build_ui(app: &Application) {
-    // Create a window and set the title
-    let window = ApplicationWindow::builder()
-        .application(app)
-        .title("RustyPendulum")
-        .build();
-
-    // Present window
-    window.present();
+    Ok(())
 }
