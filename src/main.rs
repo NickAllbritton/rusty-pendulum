@@ -2,24 +2,12 @@ use fltk::prelude::*;
 use fltk::window;
 use fltk::app;
 use fltk::frame::Frame;
-use fltk::menu;
 use fltk::enums::*;
 
-//const APP_ID: &str = "org.physics_sim.rusty_pendulum";
+mod menu_bar;
+mod world;
 
-fn menu_cb(m: &mut impl MenuExt) {
-    if let Some(choice) = m.choice() {
-        match choice.as_str() {
-            //TODO: Do stuff
-            "Play\t" => {},
-            "Pause\t" => {},
-            "Reset\t" => {},
-            "Quit\t" => { app::quit(); },
-            "Double pendulum\t" => {},
-            _ => {}
-        }
-    }
-}
+//const APP_ID: &str = "org.physics_sim.rusty_pendulum";
 
 fn main() -> Result<(), String> {
     // TODO: Use different window proportions
@@ -50,113 +38,14 @@ fn main() -> Result<(), String> {
     title.center_x(&wnd);
 
     // Create a menubar
-    let mut menubar = menu::MenuBar::default().with_size(wnd_width - 9, menu_bar_height);
-    menubar.set_text_font(Font::Screen);
-    menubar.set_text_size(20);
-    menubar.set_text_color(dark_brown);
-    menubar.set_frame(FrameType::PlasticThinDownBox);
-    menubar.set_color(graph_paper);
-    menubar.set_selection_color(rust_color);
-    menubar.add(
-        "Controls/Play\t",
-        Shortcut::None,
-        menu::MenuFlag::Normal,
-        menu_cb
-    );
-    menubar.add(
-        "Controls/Pause\t",
-        Shortcut::None,
-        menu::MenuFlag::Normal,
-        menu_cb
-    );
-    menubar.add(
-        "Controls/Reset\t",
-        Shortcut::None,
-        menu::MenuFlag::MenuDivider,
-        menu_cb
-    );
-    menubar.add(
-        "Controls/Quit\t",
-        Shortcut::None,
-        menu::MenuFlag::Normal,
-        menu_cb
-    );
-    // Link single and double so that they can't be used together. 
-    // Clicking one unclicks the other
-    // Or use one button that toggles
-    menubar.add(
-        "Pendulums/Single pendulum\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Pendulums/Double pendulum\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle | menu::MenuFlag::MenuDivider,
-        menu_cb
-    );
-    menubar.add(
-        "Pendulums/Small angle approximation\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Pendulums/Euler method\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Pendulums/Euler-Cromer method\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Pendulums/Runge-Kutta method\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Graphs/Energies\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Graphs/Velocities\t",
-        Shortcut::None,
-        menu::MenuFlag::Toggle,
-        menu_cb
-    );
-    menubar.add(
-        "Learn/Pendulum problem\t",
-        Shortcut::None,
-        menu::MenuFlag::Normal,
-        menu_cb
-    );
-    menubar.add(
-        "Learn/Pendulum approximations\t",
-        Shortcut::None,
-        menu::MenuFlag::Normal,
-        menu_cb
-    );
-    menubar.add(
-        "Learn/Simulation app\t",
-        Shortcut::None,
-        menu::MenuFlag::Normal,
-        menu_cb
-    );
+    let mut main_menu = menu_bar::TopMenuBar::new(wnd_width - 8, menu_bar_height, 
+                                    graph_paper, dark_brown, rust_color);
+    main_menu.setup();
+
     // Create a window to contain the simulation
-    let mut pendulum_wnd = window::Window::default()
-        .with_size(wnd_width - 50, wnd_height - title_h - menu_bar_height - 20)
-        .with_pos(0, title_h + menu_bar_height - 2);
-    pendulum_wnd.set_color(graph_paper);
-    pendulum_wnd.end();
-    pendulum_wnd.center_x(&wnd);
+    let mut pendulum_world = world::World::new((wnd_width - 50, wnd_height - title_h - menu_bar_height - 20),
+                    graph_paper, dark_brown);
+    pendulum_world.setup(&wnd, title_h + menu_bar_height - 2);
 
     // Window settings details
     wnd.set_color(dark_brown);
