@@ -25,7 +25,7 @@ Ummm, first of all, why so judgmental? Anyhow, there is good reason to port to R
 ## Progress
 
 The project is being written in Rust and the chosen GUI platform is [FLTK](https://fltk-rs.github.io/fltk-book/Home.html). 
-The UI is being carefully designed, now, and is still a work in progress. There is no functionality, except for a menu item 
+The UI is being carefully designed now, and is still a work in progress. There is no functionality, except for a menu item 
 that quits the application.
 
 ![Current look of RustyPendulum](./screenshots/Current.png)
