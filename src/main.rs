@@ -11,8 +11,8 @@ mod world;
 
 fn main() -> Result<(), String> {
     // TODO: Use different window proportions
-    let wnd_width: i32 = 1000;
-    let wnd_height: i32 = 1000;
+    let wnd_width: i32 = 800;
+    let wnd_height: i32 = 800;
     let menu_bar_height: i32 = 30;
     // Colors to use
     let dark_brown: Color = Color::from_rgb(30, 24, 19);
@@ -46,6 +46,7 @@ fn main() -> Result<(), String> {
     let mut pendulum_world = world::World::new((wnd_width - 50, wnd_height - title_h - menu_bar_height - 20),
                     graph_paper, dark_brown);
     pendulum_world.setup(&wnd, title_h + menu_bar_height - 2);
+    pendulum_world.draw();
 
     // Window settings details
     wnd.set_color(dark_brown);
