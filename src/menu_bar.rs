@@ -3,6 +3,8 @@ use fltk::menu;
 use fltk::app;
 use fltk::enums::*;
 
+use physics;
+
 fn menu_cb(m: &mut impl MenuExt) {
     if let Some(choice) = m.choice() {
         match choice.as_str() {

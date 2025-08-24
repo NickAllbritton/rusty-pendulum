@@ -38,26 +38,36 @@ impl World {
         self.window.end();
     }
 
-    pub fn screen_pos(self, world_pos: (i32, i32)) -> (i32, i32) {
+    pub fn screen_pos(&self, world_pos: (i32, i32)) -> (i32, i32) {
         (world_pos.0 + self.orig.0, -world_pos.1 + self.orig.1)
     }
 
     pub fn draw(&mut self) {
+        // Parameters for the axes
         let text_color = self.text_color;
         let orig_pos = self.orig;
         let len = self.len;
-        self.window.draw(move |w| {
+
+        // Parameters for the pendulums
+        let world_pos: (i32, i32) = (0, 0);
+        let diameter: i32 = (self.len as f32 / 9f32).floor() as i32;
+        let draw_pos_center: (i32, i32) = self.screen_pos(world_pos);
+        // Calculate the top right corner
+        let draw_pos: (i32, i32) = (draw_pos_center.0 - diameter/2, draw_pos_center.1 - diameter/2);
+
+        self.window.draw(move |wnd| {
+            /*************** Cartesian coordinate axis **************/
             draw::set_draw_color(text_color);
             // Draw the cartesian axes
-            draw::draw_line(0, orig_pos.1, w.w(), orig_pos.1); // x-axis
-            draw::draw_line(orig_pos.0, 0, orig_pos.0, w.h()); // y-axis
+            draw::draw_line(0, orig_pos.1, wnd.w(), orig_pos.1); // x-axis
+            draw::draw_line(orig_pos.0, 0, orig_pos.0, wnd.h()); // y-axis
 
             let tick_separation: i32 = (len as f32 / 4.0).floor() as i32;
             // Draw the x-axis ticks
             // Right tick marks
             let mut x_pos = orig_pos.0 + tick_separation;
             let mut y_pos = orig_pos.1;
-            while x_pos < w.w() {
+            while x_pos < wnd.width() {
                 draw::draw_line(x_pos, y_pos, x_pos, y_pos - 10);
                 x_pos += tick_separation;
             }
@@ -71,7 +81,7 @@ impl World {
             // Bottom tick marks
             x_pos = orig_pos.0;
             y_pos = orig_pos.1 - tick_separation;
-            while y_pos < w.h() {
+            while y_pos < wnd.height() {
                 draw::draw_line(x_pos, y_pos, x_pos + 10, y_pos);
                 y_pos += tick_separation;
             }
@@ -90,6 +100,18 @@ impl World {
             // y-axis
             draw::draw_text("L", orig_pos.0 + 20, orig_pos.1 - len + 9);
             draw::draw_text("2L", orig_pos.0 + 20, orig_pos.1 - 2*len + 9);
-        });
+
+
+            /***************     Draw the pendulums    **************/
+            // TODO: Update for actual pendulums
+/*
+            // Draw string
+            draw::set_draw_color(text_color);
+
+            // Draw bob
+            draw::set_draw_color(Color::Red);
+            draw::draw_pie(draw_pos.0, draw_pos.1, diameter, diameter, 0.0, 360.0);
+*/
+       });
     }
 }

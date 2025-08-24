@@ -6,13 +6,15 @@ use fltk::enums::*;
 
 mod menu_bar;
 mod world;
+mod pendulum;
+mod physics;
 
 //const APP_ID: &str = "org.physics_sim.rusty_pendulum";
 
 fn main() -> Result<(), String> {
     // TODO: Use different window proportions
-    let wnd_width: i32 = 800;
-    let wnd_height: i32 = 800;
+    let wnd_width: i32 = 1000;
+    let wnd_height: i32 = 1000;
     let menu_bar_height: i32 = 30;
     // Colors to use
     let dark_brown: Color = Color::from_rgb(30, 24, 19);
