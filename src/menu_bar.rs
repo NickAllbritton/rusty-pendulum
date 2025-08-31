@@ -3,7 +3,7 @@ use fltk::menu;
 use fltk::app;
 use fltk::enums::*;
 
-use physics;
+use crate::physics;
 
 fn menu_cb(m: &mut impl MenuExt) {
     if let Some(choice) = m.choice() {

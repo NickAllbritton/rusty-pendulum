@@ -4,10 +4,10 @@ use fltk::enums::Color;
 #[derive(PartialEq)]
 pub enum ApproximationMethods {
     None,
-    Small_Angle,
+    SmallAngle,
     Euler,
-    Euler_Cromer,
-    Runge_Kutta
+    EulerCromer,
+    RungeKutta
 }
 
 pub struct Pendulum {
@@ -15,7 +15,7 @@ pub struct Pendulum {
     theta_dot: f32,
     length: f32,
     method: ApproximationMethods,
-    color: Color
+    pub color: Color
 }
 
 impl Pendulum {
@@ -25,7 +25,7 @@ impl Pendulum {
             theta_dot: 0f32, // Keep this
             length: length,
             method: ApproximationMethods::None, // Probably keep this?
-            color: Color::Red // temporary - replace this with command line argument
+            color: Color::Red // temporary - replace this with constructor argument
         }
     }
 

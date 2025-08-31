@@ -3,8 +3,11 @@ use fltk::window;
 use fltk::enums::{Color, Font};
 use fltk::draw;
 
+use crate::pendulum::Pendulum;
+
 pub struct World {
     window: window::Window,
+    systems: Vec<Pendulum>,
     size: (i32, i32),
     pos: (i32, i32),
     bg_color: Color,
@@ -21,6 +24,7 @@ impl World {
         let mid_x: f32 = world_window.clone().width() as f32 /2.0;
         Self {
             window: world_window,
+            systems: Vec::new(),
             size: size,
             pos: (0, 0), // Temporary -> call set_height
             bg_color: bg_color,
@@ -47,13 +51,15 @@ impl World {
         let text_color = self.text_color;
         let orig_pos = self.orig;
         let len = self.len;
+        let radius: i32 = (self.len as f32 / 18f32).floor() as i32;
+        // Positions and colors of pendulums
+        let mut pendulums: Vec<( (i32, i32), Color)> = Vec::new();
+        for pendulum in &self.systems {
+            // Parameters for the pendulums
+            let draw_pos_center: (i32, i32) = self.screen_pos(pendulum.cartesian_pos());
+            pendulums.push( ( draw_pos_center, pendulum.color) );
+        }
 
-        // Parameters for the pendulums
-        let world_pos: (i32, i32) = (0, 0);
-        let diameter: i32 = (self.len as f32 / 9f32).floor() as i32;
-        let draw_pos_center: (i32, i32) = self.screen_pos(world_pos);
-        // Calculate the top right corner
-        let draw_pos: (i32, i32) = (draw_pos_center.0 - diameter/2, draw_pos_center.1 - diameter/2);
 
         self.window.draw(move |wnd| {
             /*************** Cartesian coordinate axis **************/
@@ -103,15 +109,21 @@ impl World {
 
 
             /***************     Draw the pendulums    **************/
-            // TODO: Update for actual pendulums
-/*
-            // Draw string
-            draw::set_draw_color(text_color);
+            for pendulum in &pendulums {
 
-            // Draw bob
-            draw::set_draw_color(Color::Red);
-            draw::draw_pie(draw_pos.0, draw_pos.1, diameter, diameter, 0.0, 360.0);
-*/
+                // Calculate the top right corner
+                let draw_pos: (i32, i32) = (pendulum.0.0 - radius, pendulum.0.1 - radius);
+
+                // TODO: Update for actual pendulums
+                
+                // Draw string
+                draw::set_draw_color(text_color);
+                // TODO: Draw string
+
+                // Draw bob
+                draw::set_draw_color(pendulum.1);
+                draw::draw_pie(draw_pos.0, draw_pos.1, radius*2, radius*2, 0.0, 360.0);
+            }
        });
     }
 }
