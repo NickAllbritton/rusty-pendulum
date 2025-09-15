@@ -8,6 +8,7 @@ use std::cell::RefCell;
 
 use crate::physics;
 use crate::world;
+use crate::pendulum;
 
 fn control_callback(m: &mut impl MenuExt) {
     if let Some(choice) = m.choice() {
@@ -85,9 +86,10 @@ impl TopMenuBar {
                 let world_clone = world.clone();
                 let pendulum_length = world_clone.borrow().len as f32;
                 move |_| {
-                    world::World::add_remove_small_angle(pendulum_length, 
+                    world::World::add_remove_system(pendulum_length,
+                        pendulum::ApproximationMethods::SmallAngle,
                         &mut world_clone.borrow_mut().systems);
-                    println!("Small angle approximation menu button was clicked!!");
+                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );
@@ -99,8 +101,10 @@ impl TopMenuBar {
                 let world_clone = world.clone();
                 let pendulum_length = world_clone.borrow().len as f32;
                 move |_| {
-                    world::World::add_remove_euler(pendulum_length, 
+                    world::World::add_remove_system(pendulum_length, 
+                        pendulum::ApproximationMethods::Euler,
                         &mut world_clone.borrow_mut().systems);
+                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );
@@ -112,8 +116,10 @@ impl TopMenuBar {
                 let world_clone = world.clone();
                 let pendulum_length = world_clone.borrow().len as f32;
                 move |_| {
-                    world::World::add_remove_euler_cromer(pendulum_length, 
+                    world::World::add_remove_system(pendulum_length, 
+                        pendulum::ApproximationMethods::EulerCromer,
                         &mut world_clone.borrow_mut().systems);
+                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );
@@ -125,8 +131,10 @@ impl TopMenuBar {
                 let world_clone = world.clone();
                 let pendulum_length = world_clone.borrow().len as f32;
                 move |_| {
-                    world::World::add_remove_runge_kutta(pendulum_length, 
+                    world::World::add_remove_system(pendulum_length, 
+                        pendulum::ApproximationMethods::RungeKutta,
                         &mut world_clone.borrow_mut().systems);
+                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );

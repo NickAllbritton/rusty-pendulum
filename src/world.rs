@@ -8,8 +8,9 @@ use crate::pendulum::*;
 // the pendulum systems
 //pub static mut systems: Vec<Pendulum> = Vec::new();
 
+#[derive(Clone)]
 pub struct World {
-    window: window::Window,
+    pub window: window::Window,
     pub systems: Vec<Pendulum>,
     size: (i32, i32),
     pos: (i32, i32),
@@ -48,24 +49,21 @@ impl World {
     
     // For now it just creates a new pendulum without checking whether one already exists
     // TODO: toggle creating and destroying pendulum
-    pub fn add_remove_small_angle(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
-        pendulum_systems.push( Pendulum::new(len, Color::Red, ApproximationMethods::SmallAngle) ); 
+    pub fn add_remove_system(len: f32, method: ApproximationMethods, pendulum_systems: &mut Vec<Pendulum>) {
+        let mut already_added = false;
+        for pendulum in &pendulum_systems.clone() {
+            if pendulum.method == method { already_added = true; }
+        }
+        if !already_added {
+            pendulum_systems.push( Pendulum::new(len, method) ); 
+        }
+        else {
+            // TODO: implement removing of pendulums
+        }
     }
 
-    pub fn add_remove_euler(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
-        pendulum_systems.push( Pendulum::new(len, Color::Blue, ApproximationMethods::SmallAngle) ); 
-    }
-
-    pub fn add_remove_euler_cromer(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
-        pendulum_systems.push( Pendulum::new(len, Color::Yellow, ApproximationMethods::SmallAngle) ); 
-    }
-
-    pub fn add_remove_runge_kutta(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
-        pendulum_systems.push( Pendulum::new(len, Color::Green, ApproximationMethods::SmallAngle) ); 
-    }
-
-    pub fn screen_pos(&self, world_pos: (i32, i32)) -> (i32, i32) {
-        (world_pos.0 + self.orig.0, -world_pos.1 + self.orig.1)
+    pub fn screen_pos(orig: (i32, i32), world_pos: (i32, i32)) -> (i32, i32) {
+        (world_pos.0 + orig.0, -world_pos.1 + orig.1)
     }
 
     pub fn draw(&mut self) {
@@ -74,14 +72,8 @@ impl World {
         let orig_pos = self.orig;
         let len = self.len;
         let radius: i32 = (self.len as f32 / 18f32).floor() as i32;
-        // Positions and colors of pendulums
-        let mut pendulums: Vec<( (i32, i32), Color)> = Vec::new();
-        for pendulum in &self.systems {
-            // Parameters for the pendulums
-            let draw_pos_center: (i32, i32) = self.screen_pos(pendulum.cartesian_pos());
-            pendulums.push( ( draw_pos_center, pendulum.color) );
-            println!("{} pendulum preparing to draw!", pendulum.method());
-        }
+        let systems = self.systems.clone();
+        let orig = self.orig;
 
 
         self.window.draw(move |wnd| {
@@ -132,21 +124,20 @@ impl World {
 
 
             /***************     Draw the pendulums    **************/
-            for pendulum in &pendulums {
+            for pendulum in &systems {
 
+                let draw_pos_center: (i32, i32) = Self::screen_pos(orig, pendulum.cartesian_pos());
                 // Calculate the top right corner
-                let draw_pos: (i32, i32) = (pendulum.0.0 - radius, pendulum.0.1 - radius);
+                let draw_pos: (i32, i32) = (draw_pos_center.0 - radius, draw_pos_center.1 - radius);
 
-                // TODO: Update for actual pendulums
-                
                 // Draw string
                 draw::set_draw_color(text_color);
                 // TODO: Draw string
 
                 // Draw bob
-                draw::set_draw_color(pendulum.1);
+                draw::set_draw_color(pendulum.method.color());
                 draw::draw_pie(draw_pos.0, draw_pos.1, radius*2, radius*2, 0.0, 360.0);
             }
-       });
+        });
     }
 }

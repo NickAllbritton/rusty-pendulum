@@ -46,7 +46,7 @@ fn main() -> Result<(), String> {
     let mut pendulum_world = world::World::new((wnd_width - 50, wnd_height - title_h - menu_bar_height - 20),
                     graph_paper, dark_brown);
     pendulum_world.setup(&wnd, title_h + menu_bar_height - 2);
-    pendulum_world.draw();
+    //pendulum_world.draw();
 
     // Create a refcell to contain the world so it can be borrowed safely by the menubar
     let mut world_cell: Rc<RefCell<world::World>> = Rc::new(RefCell::new(pendulum_world));
@@ -62,7 +62,11 @@ fn main() -> Result<(), String> {
     wnd.end();
     wnd.show();
     // Run the application
-    app.run().unwrap();
+    //app.run().unwrap();
+
+    while app.wait() {
+        world_cell.borrow_mut().draw();
+    }
 
     Ok(())
 }
