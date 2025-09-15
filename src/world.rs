@@ -58,7 +58,7 @@ impl World {
             pendulum_systems.push( Pendulum::new(len, method) ); 
         }
         else {
-            // TODO: implement removing of pendulums
+            pendulum_systems.retain( |each_pendulum| each_pendulum.method != method );
         }
     }
 
