@@ -7,6 +7,7 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 use crate::world;
+use crate::physics;
 use crate::pendulum;
 
 fn control_callback(m: &mut impl MenuExt) {
@@ -86,7 +87,11 @@ impl TopMenuBar {
             {
                 let world_clone = world.clone();
                 move |_| {
-                    // todo: reinitialize pendulums
+                    let new_phase = world_clone.borrow().data.initial();
+                    for pendulum in &mut world_clone.borrow_mut().systems {
+                        pendulum.theta = new_phase.0;
+                        pendulum.theta_dot = new_phase.1;
+                    }
                     world_clone.borrow_mut().play = false;
                     world_clone.borrow_mut().started = false;
                 }

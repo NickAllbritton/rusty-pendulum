@@ -13,7 +13,7 @@ use crate::physics;
 #[derive(Clone)]
 pub struct World {
     pub window: window::Window,
-    data: physics::PhysicsVariables,
+    pub data: physics::PhysicsVariables,
     pub systems: Vec<Pendulum>,
     size: (i32, i32),
     pos: (i32, i32),

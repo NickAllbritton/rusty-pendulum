@@ -78,7 +78,7 @@ impl PhysicsVariables {
         *self.t.last().expect("now() should never be called before initialize()")
     }
 
-    pub fn initial(self) -> (f32, f32) {
+    pub fn initial(&self) -> (f32, f32) {
         (*self.theta.first().expect("initial() should not be called before initialize()"), 
          *self.theta_dot.first().expect("initial() should never be called before initialize()"))
     }
