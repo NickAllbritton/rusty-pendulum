@@ -27,10 +27,10 @@ impl ApproximationMethods {
     pub fn color(&self) -> Color {
         match self {
             ApproximationMethods::None => { Color::Black }, // not useful
-            ApproximationMethods::SmallAngle => { Color::Red },
-            ApproximationMethods::Euler => { Color::Blue },
-            ApproximationMethods::EulerCromer => { Color::Green },
-            ApproximationMethods::RungeKutta => { Color::Yellow }
+            ApproximationMethods::SmallAngle => { Color::from_rgb(180, 45, 45) },
+            ApproximationMethods::Euler => { Color::from_rgb(50, 180, 50) },
+            ApproximationMethods::EulerCromer => { Color::from_rgb(45, 120, 200) },
+            ApproximationMethods::RungeKutta => { Color::from_rgb(120, 45, 120) }
         }
     }
 }
@@ -47,7 +47,7 @@ pub struct Pendulum {
 impl Pendulum {
     pub fn new(length: f32,/* color: Color,*/ approx_method: ApproximationMethods) -> Self {
         Self {
-            theta: 0.09f32, // Keep this
+            theta: 0.25f32, // Keep this
             theta_dot: 0f32, // Keep this
             length: length,
             method: approx_method, 
