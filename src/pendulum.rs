@@ -1,7 +1,6 @@
-use fltk::prelude::*;
 use fltk::enums::Color;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum ApproximationMethods {
     None,
     SmallAngle,
@@ -10,6 +9,7 @@ pub enum ApproximationMethods {
     RungeKutta
 }
 
+#[derive(Clone)]
 pub struct Pendulum {
     theta: f32,
     theta_dot: f32,
@@ -19,14 +19,30 @@ pub struct Pendulum {
 }
 
 impl Pendulum {
-    pub fn new(length: f32) -> Self {
+    pub fn new(length: f32, color: Color, approx_method: ApproximationMethods) -> Self {
         Self {
             theta: 0f32, // Keep this
             theta_dot: 0f32, // Keep this
             length: length,
-            method: ApproximationMethods::None, // Probably keep this?
-            color: Color::Red // temporary - replace this with constructor argument
+            method: approx_method, 
+            color: color 
         }
+    }
+
+    pub fn method(&self) -> String {
+        match self.method {
+            ApproximationMethods::None => { "None".to_string() },
+            ApproximationMethods::SmallAngle => { "Small angle approximation".to_string() },
+            ApproximationMethods::Euler => { "Euler method".to_string() },
+            ApproximationMethods::EulerCromer => { "Euler-Cromer method".to_string() },
+            ApproximationMethods::RungeKutta => { "Runge-Kutta method".to_string() }
+        }
+    }
+
+
+    pub fn update(&mut self, phase: (f32, f32)) {
+        self.theta = phase.0;
+        self.theta_dot = phase.1;
     }
 
     // cartesian_coords function

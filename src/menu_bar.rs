@@ -3,9 +3,13 @@ use fltk::menu;
 use fltk::app;
 use fltk::enums::*;
 
-use crate::physics;
+use std::rc::Rc;
+use std::cell::RefCell;
 
-fn menu_cb(m: &mut impl MenuExt) {
+use crate::physics;
+use crate::world;
+
+fn control_callback(m: &mut impl MenuExt) {
     if let Some(choice) = m.choice() {
         match choice.as_str() {
             // TODO: Do stuff
@@ -40,7 +44,7 @@ impl TopMenuBar {
         }
     }
 
-    pub fn setup(&mut self) {
+    pub fn setup(&mut self, world: &mut Rc<RefCell<world::World>>) {
         self.menubar_widget.set_text_font(Font::Screen);
         self.menubar_widget.set_text_size(20);
         self.menubar_widget.set_text_color(self.text_color);
@@ -52,82 +56,111 @@ impl TopMenuBar {
             "Controls/Play\t",
             Shortcut::None,
             menu::MenuFlag::Normal,
-            menu_cb
+            control_callback
         );
         self.menubar_widget.add(
             "Controls/Pause\t",
             Shortcut::None,
             menu::MenuFlag::Normal,
-            menu_cb
+            control_callback
         );
         self.menubar_widget.add(
             "Controls/Reset\t",
             Shortcut::None,
             menu::MenuFlag::MenuDivider,
-            menu_cb
+            control_callback
         );
         self.menubar_widget.add(
             "Controls/Quit\t",
             Shortcut::None,
             menu::MenuFlag::Normal,
-            menu_cb
+            control_callback
         );
         // Pendulums
         self.menubar_widget.add(
-            "Pendulums/Small anle approximation\t",
+            "Pendulums/Small angle approximation\t",
             Shortcut::None,
             menu::MenuFlag::Toggle,
-            menu_cb
+            {
+                let world_clone = world.clone();
+                let pendulum_length = world_clone.borrow().len as f32;
+                move |_| {
+                    world::World::add_remove_small_angle(pendulum_length, 
+                        &mut world_clone.borrow_mut().systems);
+                    println!("Small angle approximation menu button was clicked!!");
+                }
+            }
         );
         self.menubar_widget.add(
             "Pendulums/Euler method\t",
             Shortcut::None,
             menu::MenuFlag::Toggle,
-            menu_cb
+            {
+                let world_clone = world.clone();
+                let pendulum_length = world_clone.borrow().len as f32;
+                move |_| {
+                    world::World::add_remove_euler(pendulum_length, 
+                        &mut world_clone.borrow_mut().systems);
+                }
+            }
         );
         self.menubar_widget.add(
             "Pendulums/Euler-Cromer method\t",
             Shortcut::None,
             menu::MenuFlag::Toggle,
-            menu_cb
+            {
+                let world_clone = world.clone();
+                let pendulum_length = world_clone.borrow().len as f32;
+                move |_| {
+                    world::World::add_remove_euler_cromer(pendulum_length, 
+                        &mut world_clone.borrow_mut().systems);
+                }
+            }
         );
         self.menubar_widget.add(
             "Pendulums/Runge-Kutta method\t",
             Shortcut::None,
             menu::MenuFlag::Toggle,
-            menu_cb
+            {
+                let world_clone = world.clone();
+                let pendulum_length = world_clone.borrow().len as f32;
+                move |_| {
+                    world::World::add_remove_runge_kutta(pendulum_length, 
+                        &mut world_clone.borrow_mut().systems);
+                }
+            }
         );
         // Graphs
         self.menubar_widget.add(
             "Graphs/Energies\t",
             Shortcut::None,
             menu::MenuFlag::Normal, // maybe Toggle?
-            menu_cb
+            control_callback // temporary: does nothing
         );
         self.menubar_widget.add(
             "Graphs/Velocities\t",
             Shortcut::None,
             menu::MenuFlag::Normal, // maybe Toggle?
-            menu_cb
+            control_callback // temporary: does nothing
         );
         // Learn
         self.menubar_widget.add(
             "Learn/Pendulum problem\t",
             Shortcut::None,
             menu::MenuFlag::Normal, // maybe Toggle?
-            menu_cb
+            control_callback // temporary: does nothing
         );
         self.menubar_widget.add(
             "Learn/Pendulum approximations\t",
             Shortcut::None,
             menu::MenuFlag::Normal, // maybe Toggle?
-            menu_cb
+            control_callback // temporary: does nothing
         );
         self.menubar_widget.add(
             "Learn/Simulation app\t", // Is this menu option even necessary?
             Shortcut::None,
             menu::MenuFlag::Normal, // maybe Toggle?
-            menu_cb
+            control_callback // temporary: does nothing
         );
     }
 }

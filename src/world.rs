@@ -3,16 +3,19 @@ use fltk::window;
 use fltk::enums::{Color, Font};
 use fltk::draw;
 
-use crate::pendulum::Pendulum;
+use crate::pendulum::*;
+
+// the pendulum systems
+//pub static mut systems: Vec<Pendulum> = Vec::new();
 
 pub struct World {
     window: window::Window,
-    systems: Vec<Pendulum>,
+    pub systems: Vec<Pendulum>,
     size: (i32, i32),
     pos: (i32, i32),
     bg_color: Color,
     text_color: Color,
-    len: i32, // L - length of the pendulum in pixels
+    pub len: i32, // L - length of the pendulum in pixels
     orig: (i32, i32) // origin in screen coordinates
 }
 
@@ -33,13 +36,32 @@ impl World {
             orig: (mid_x.floor() as i32, (len*2.2).floor() as i32)
         }
     }
-
     pub fn setup(&mut self, parent_wnd: &window::Window, y_pos: i32) {
+        // Create a pendulum
+        //self.systems.push( Pendulum::new(self.len as f32, Color::Red, ApproximationMethods::None) );
         self.window.set_color(self.bg_color);
         let x_pos: i32 = parent_wnd.width()/2 - self.size.0/2 - 4;
         self.pos = (x_pos, y_pos);
         self.window.clone().with_pos(x_pos, y_pos);
         self.window.end();
+    }
+    
+    // For now it just creates a new pendulum without checking whether one already exists
+    // TODO: toggle creating and destroying pendulum
+    pub fn add_remove_small_angle(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
+        pendulum_systems.push( Pendulum::new(len, Color::Red, ApproximationMethods::SmallAngle) ); 
+    }
+
+    pub fn add_remove_euler(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
+        pendulum_systems.push( Pendulum::new(len, Color::Blue, ApproximationMethods::SmallAngle) ); 
+    }
+
+    pub fn add_remove_euler_cromer(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
+        pendulum_systems.push( Pendulum::new(len, Color::Yellow, ApproximationMethods::SmallAngle) ); 
+    }
+
+    pub fn add_remove_runge_kutta(len: f32, pendulum_systems: &mut Vec<Pendulum>) {
+        pendulum_systems.push( Pendulum::new(len, Color::Green, ApproximationMethods::SmallAngle) ); 
     }
 
     pub fn screen_pos(&self, world_pos: (i32, i32)) -> (i32, i32) {
@@ -58,6 +80,7 @@ impl World {
             // Parameters for the pendulums
             let draw_pos_center: (i32, i32) = self.screen_pos(pendulum.cartesian_pos());
             pendulums.push( ( draw_pos_center, pendulum.color) );
+            println!("{} pendulum preparing to draw!", pendulum.method());
         }
 
 

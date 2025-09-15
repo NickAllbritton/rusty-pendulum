@@ -4,6 +4,9 @@ use fltk::app;
 use fltk::frame::Frame;
 use fltk::enums::*;
 
+use std::rc::Rc;
+use std::cell::RefCell;
+
 mod menu_bar;
 mod world;
 mod pendulum;
@@ -39,18 +42,21 @@ fn main() -> Result<(), String> {
     title.set_color(graph_paper);
     title.center_x(&wnd);
 
-    // Create a menubar
-    let mut main_menu = menu_bar::TopMenuBar::new(wnd_width - 8, menu_bar_height, 
-                                    graph_paper, dark_brown, rust_color);
-    main_menu.setup();
-
     // Create a window to contain the simulation
     let mut pendulum_world = world::World::new((wnd_width - 50, wnd_height - title_h - menu_bar_height - 20),
                     graph_paper, dark_brown);
     pendulum_world.setup(&wnd, title_h + menu_bar_height - 2);
     pendulum_world.draw();
 
-    // Window settings details
+    // Create a refcell to contain the world so it can be borrowed safely by the menubar
+    let mut world_cell: Rc<RefCell<world::World>> = Rc::new(RefCell::new(pendulum_world));
+
+    // Create a menubar
+    let mut main_menu = menu_bar::TopMenuBar::new(wnd_width - 8, menu_bar_height, 
+                                    graph_paper, dark_brown, rust_color);
+    main_menu.setup(&mut world_cell);
+
+        // Window settings details
     wnd.set_color(dark_brown);
     wnd.make_resizable(false); // To prevent xmonad from tiling it
     wnd.end();
