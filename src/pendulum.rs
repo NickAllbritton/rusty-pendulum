@@ -44,7 +44,7 @@ pub struct Pendulum {
 impl Pendulum {
     pub fn new(length: f32,/* color: Color,*/ approx_method: ApproximationMethods) -> Self {
         Self {
-            theta: 0f32, // Keep this
+            theta: 0.5f32, // Keep this
             theta_dot: 0f32, // Keep this
             length: length,
             method: approx_method, 

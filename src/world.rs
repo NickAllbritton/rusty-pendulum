@@ -132,7 +132,9 @@ impl World {
 
                 // Draw string
                 draw::set_draw_color(text_color);
-                // TODO: Draw string
+                let attach_pos: (i32, i32) = Self::screen_pos(orig, (0i32, len));
+                draw::draw_line(attach_pos.0, attach_pos.1, 
+                    draw_pos_center.0, draw_pos_center.1);
 
                 // Draw bob
                 draw::set_draw_color(pendulum.method.color());
