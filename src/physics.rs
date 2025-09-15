@@ -1,7 +1,7 @@
 const SQRT_Q_OVR_L: f32 = 1f32;
 
 // Small-angle analytic approximation
-pub fn small_angle(dt: f32, prev_bob: (f32, f32)) -> (f32, f32) {
+pub fn small_angle(t: f32, init_bob: (f32, f32)) -> (f32, f32) {
     // Small-angle approximation is analytical, meaning:
     //
     // -> Provide the TOTAL elapsed time and the initial angle
@@ -13,8 +13,9 @@ pub fn small_angle(dt: f32, prev_bob: (f32, f32)) -> (f32, f32) {
     // 
     // The benefit of this way is to have the same parameters and return values as the
     // numerical methods.
-    (prev_bob.0*(dt*SQRT_Q_OVR_L).cos(), 
-     -prev_bob.1*SQRT_Q_OVR_L*(dt*SQRT_Q_OVR_L).sin())
+    let theta = init_bob.0*(SQRT_Q_OVR_L*t).cos();
+    let theta_dot = -init_bob.0*SQRT_Q_OVR_L*(SQRT_Q_OVR_L*t).sin();
+    (theta, theta_dot)
 }
 
 // Second-order Euler method
@@ -41,3 +42,44 @@ pub fn euler_cromer(dt: f32, prev_bob: (f32, f32)) -> (f32, f32) {
 /*pub fn runge_kutta(dt: f32, prev_bob: (f32, f32)) -> (f32, f32) {
     (0f32, 0f32)
 }*/
+
+#[derive(Clone)]
+pub struct PhysicsVariables {
+    t: Vec<f32>,
+    theta: Vec<f32>,
+    theta_dot: Vec<f32>,
+    //theta_double_dot: Vec<f32>
+}
+
+impl PhysicsVariables {
+    pub fn empty() -> Self {
+        Self {
+            t: Vec::new(),
+            theta: Vec::new(),
+            theta_dot: Vec::new()
+        }
+    }
+
+    pub fn initialize(theta: f32) -> Self {
+        Self {
+            t: vec![0f32],
+            theta: vec![theta],
+            theta_dot: vec![0f32]
+        }
+    }
+    
+    // todo: add other data
+    pub fn update(&mut self, dt: f32) {
+        self.t.push( *self.t.last().expect("initialize() always called before update()") + dt );
+    }
+
+    // return global time
+    pub fn now(self) -> f32 {
+        *self.t.last().expect("now() should never be called before initialize()")
+    }
+
+    pub fn initial(self) -> (f32, f32) {
+        (*self.theta.first().expect("initial() should not be called before initialize()"), 
+         *self.theta_dot.first().expect("initial() should never be called before initialize()"))
+    }
+}

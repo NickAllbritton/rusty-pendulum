@@ -60,6 +60,10 @@ impl TopMenuBar {
                 let world_clone = world.clone();
                 move |_| {
                     world_clone.borrow_mut().play = true;
+                    world_clone.borrow_mut().started = true;
+                    if world_clone.borrow_mut().systems.len() > 0 {
+                        world_clone.borrow_mut().initialize();
+                    }
                 }
             }
         );
@@ -80,9 +84,11 @@ impl TopMenuBar {
             Shortcut::None,
             menu::MenuFlag::MenuDivider,
             {
-                //let world_clone = world.clone();
+                let world_clone = world.clone();
                 move |_| {
-                    // todo: do something
+                    // todo: reinitialize pendulums
+                    world_clone.borrow_mut().play = false;
+                    world_clone.borrow_mut().started = false;
                 }
             }
 

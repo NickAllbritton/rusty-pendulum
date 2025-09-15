@@ -9,14 +9,14 @@ This project is the successor of [PendulumSIM](#what-is-pendulumsim): https://gi
 ## Progress
 
 The project is being written in Rust and the chosen GUI platform is [FLTK](https://fltk-rs.github.io/fltk-book/Home.html). 
-There is now functionality! Although it still needs work, Euler method and Euler-Cromer method are both implemented.
+There is now functionality! Although it still needs work, Small-angle approximation, Euler method and Euler-Cromer method are all implemented.
 There is no way to set where the pendulum starts right now except by changing the code, so that will need to be changed. 
 
 ![Current look of RustyPendulum](./screenshots/Current.png)
 
 Future plans:
 - Show a 'shadow' pendulum which holds the place of the start position with ApproximationMethods::None
-- Control->Reset menu bar option resets all the pendulum angles/velocities to the shadow pendulum
+- Controls->Reset menu bar option resets all the pendulum angles/velocities to the shadow pendulum
 - Allow dragging the pendulums from 0 degrees to starting position with mouse
 - Track relevant physical quantities against a global time variable to allow graphs to be opened from the menu and/orcsv files to be opened after to create graphs with a spreadsheet
 

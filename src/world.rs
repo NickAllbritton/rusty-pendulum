@@ -5,6 +5,7 @@ use fltk::draw;
 
 use crate::time;
 use crate::pendulum::*;
+use crate::physics;
 
 // the pendulum systems
 //pub static mut systems: Vec<Pendulum> = Vec::new();
@@ -12,11 +13,13 @@ use crate::pendulum::*;
 #[derive(Clone)]
 pub struct World {
     pub window: window::Window,
+    data: physics::PhysicsVariables,
     pub systems: Vec<Pendulum>,
     size: (i32, i32),
     pos: (i32, i32),
     time: time::FrameTimer,
     pub play: bool,
+    pub started: bool,
     bg_color: Color,
     text_color: Color,
     pub len: i32, // L - length of the pendulum in pixels
@@ -31,11 +34,13 @@ impl World {
         let mid_x: f32 = world_window.clone().width() as f32 /2.0;
         Self {
             window: world_window,
+            data: physics::PhysicsVariables::empty(),
             systems: Vec::new(),
             size: size,
             pos: (0, 0), // Temporary -> call set_height
             time: time::FrameTimer::new(),
             play: false,
+            started: false,
             bg_color: bg_color,
             text_color: text_color,
             len: len.floor() as i32,  // 2.5 L's fit in the frame
@@ -73,13 +78,32 @@ impl World {
 
     pub fn update(&mut self) {
         let millisperframe: u128 = 17; // roughly 60 fps
+        let dt: f32 = 0.035f32;
         // If this many milliseconds have passed since last frame
         // calculate new pendulum positions
         if self.time.mark(millisperframe) && self.play {
+            if self.started { 
+                self.data.update(dt); 
+                //println!("{}", self.data.clone().now());
+            }
             for system in &mut self.systems {
-                system.update(0.035f32);
+                if system.method == ApproximationMethods::SmallAngle {
+                    let new_phase = physics::small_angle(self.data.clone().now(), self.data.clone().initial());
+                    system.theta = new_phase.0;
+                    system.theta_dot = new_phase.1;
+                }
+                else
+                {
+                    system.update(dt);
+                }
             }
         }
+    }
+
+    pub fn initialize(&mut self) {
+        self.data = physics::PhysicsVariables::initialize(self.systems.first()
+            .expect("This is only ever called from within a callback which checks if self.systems is empty first.")
+            .clone().theta);
     }
 
     pub fn draw(&mut self) {
