@@ -3,6 +3,7 @@ use fltk::window;
 use fltk::enums::{Color, Font};
 use fltk::draw;
 
+use crate::time;
 use crate::pendulum::*;
 
 // the pendulum systems
@@ -14,6 +15,8 @@ pub struct World {
     pub systems: Vec<Pendulum>,
     size: (i32, i32),
     pos: (i32, i32),
+    time: time::FrameTimer,
+    pub play: bool,
     bg_color: Color,
     text_color: Color,
     pub len: i32, // L - length of the pendulum in pixels
@@ -31,6 +34,8 @@ impl World {
             systems: Vec::new(),
             size: size,
             pos: (0, 0), // Temporary -> call set_height
+            time: time::FrameTimer::new(),
+            play: false,
             bg_color: bg_color,
             text_color: text_color,
             len: len.floor() as i32,  // 2.5 L's fit in the frame
@@ -64,6 +69,17 @@ impl World {
 
     pub fn screen_pos(orig: (i32, i32), world_pos: (i32, i32)) -> (i32, i32) {
         (world_pos.0 + orig.0, -world_pos.1 + orig.1)
+    }
+
+    pub fn update(&mut self) {
+        let millisperframe: u128 = 17; // roughly 60 fps
+        // If this many milliseconds have passed since last frame
+        // calculate new pendulum positions
+        if self.time.mark(millisperframe) && self.play {
+            for system in &mut self.systems {
+                system.update(0.035f32);
+            }
+        }
     }
 
     pub fn draw(&mut self) {

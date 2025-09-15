@@ -11,6 +11,7 @@ mod menu_bar;
 mod world;
 mod pendulum;
 mod physics;
+mod time;
 
 //const APP_ID: &str = "org.physics_sim.rusty_pendulum";
 
@@ -66,6 +67,8 @@ fn main() -> Result<(), String> {
 
     while app.wait() {
         world_cell.borrow_mut().draw();
+        world_cell.borrow_mut().update();
+        world_cell.borrow_mut().window.redraw();
     }
 
     Ok(())

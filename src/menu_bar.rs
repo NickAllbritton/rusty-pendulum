@@ -6,7 +6,6 @@ use fltk::enums::*;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-use crate::physics;
 use crate::world;
 use crate::pendulum;
 
@@ -57,25 +56,47 @@ impl TopMenuBar {
             "Controls/Play\t",
             Shortcut::None,
             menu::MenuFlag::Normal,
-            control_callback
+            {
+                let world_clone = world.clone();
+                move |_| {
+                    world_clone.borrow_mut().play = true;
+                }
+            }
         );
         self.menubar_widget.add(
             "Controls/Pause\t",
             Shortcut::None,
             menu::MenuFlag::Normal,
-            control_callback
+            {
+                let world_clone = world.clone();
+                move |_| {
+                    world_clone.borrow_mut().play = false;
+                }
+            }
+
         );
         self.menubar_widget.add(
             "Controls/Reset\t",
             Shortcut::None,
             menu::MenuFlag::MenuDivider,
-            control_callback
+            {
+                //let world_clone = world.clone();
+                move |_| {
+                    // todo: do something
+                }
+            }
+
         );
         self.menubar_widget.add(
             "Controls/Quit\t",
             Shortcut::None,
             menu::MenuFlag::Normal,
-            control_callback
+            {
+                move |_| {
+                    app::quit();
+                }
+            }
+
         );
         // Pendulums
         self.menubar_widget.add(
@@ -89,7 +110,6 @@ impl TopMenuBar {
                     world::World::add_remove_system(pendulum_length,
                         pendulum::ApproximationMethods::SmallAngle,
                         &mut world_clone.borrow_mut().systems);
-                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );
@@ -104,7 +124,6 @@ impl TopMenuBar {
                     world::World::add_remove_system(pendulum_length, 
                         pendulum::ApproximationMethods::Euler,
                         &mut world_clone.borrow_mut().systems);
-                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );
@@ -119,7 +138,6 @@ impl TopMenuBar {
                     world::World::add_remove_system(pendulum_length, 
                         pendulum::ApproximationMethods::EulerCromer,
                         &mut world_clone.borrow_mut().systems);
-                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );
@@ -134,7 +152,6 @@ impl TopMenuBar {
                     world::World::add_remove_system(pendulum_length, 
                         pendulum::ApproximationMethods::RungeKutta,
                         &mut world_clone.borrow_mut().systems);
-                    world_clone.borrow_mut().window.redraw();
                 }
             }
         );

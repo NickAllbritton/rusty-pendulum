@@ -1,5 +1,7 @@
 use fltk::enums::Color;
 
+use crate::physics;
+
 #[derive(PartialEq, Clone)]
 pub enum ApproximationMethods {
     None,
@@ -52,8 +54,15 @@ impl Pendulum {
         }
     }
 
-
-    pub fn update(&mut self, phase: (f32, f32)) {
+    pub fn update(&mut self, dt: f32) {
+        let mut phase: (f32, f32) = (self.theta, self.theta_dot);
+        match self.method {
+            ApproximationMethods::SmallAngle => { phase = physics::small_angle(dt, phase); },
+            ApproximationMethods::Euler => { phase = physics::euler_method(dt, phase); },
+            ApproximationMethods::EulerCromer => { phase = physics::euler_cromer(dt, phase); },
+            ApproximationMethods::RungeKutta => { /*TODO: do stuff */ },
+            _ => { /* unreachable */ }
+        }
         self.theta = phase.0;
         self.theta_dot = phase.1;
     }
